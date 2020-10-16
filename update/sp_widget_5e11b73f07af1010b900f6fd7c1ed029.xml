@@ -4,25 +4,37 @@
         <client_script><![CDATA[function($scope,$rootScope) {
 	/* widget controller */
 	var c = this;
-
+// Receives event selectNote, self-invoked function which receives event and data
 	$rootScope.$on('selectNote', function(event,data) {
+		//Calls the server with get, makes a promise
+		//Passes an object with the action and the NoteID from the notes list event
 		c.server.get({
 			action: 'getNote',
 			noteID: $rootScope.noteID
+			//Once the server responds
 		}).then(function(r) {
+			//Populates the c.data object with values from the server response
 			c.data.title = r.data.note.title;
 			c.data.note = r.data.note.note;
 			c.data.noteID = r.data.note.sys_id;
 		});
-
 	});
+	//Creates a method updateNote for the controller. Receives updatetype
 	c.updateNote = function(updateType) {
+		//Calls server
+		//passes an object with the action and all that changed
 		c.server.get({
 			action: 'updateNote',
 			noteID: c.data.noteID,
 			noteBody: c.data.note,
 			noteTitle: c.data.title
+			//Once the server responds
 		}).then(function(r) {
+			var updatedData = {
+				note: c.data.note,
+				title: c.data.title
+			};
+			$rootScope.$emit('noteUpdated', updatedData);
 		});
 	}
 }]]></client_script>
@@ -63,14 +75,14 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2020-10-06 15:59:57</sys_created_on>
         <sys_id>5e11b73f07af1010b900f6fd7c1ed029</sys_id>
-        <sys_mod_count>14</sys_mod_count>
+        <sys_mod_count>21</sys_mod_count>
         <sys_name>Notes Body</sys_name>
         <sys_package display_value="CreateNotes" source="x_snc_createnotes">df5fd9a5090232007f44e1046c8ff69f</sys_package>
         <sys_policy/>
         <sys_scope display_value="CreateNotes">df5fd9a5090232007f44e1046c8ff69f</sys_scope>
         <sys_update_name>sp_widget_5e11b73f07af1010b900f6fd7c1ed029</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2020-10-06 19:56:54</sys_updated_on>
+        <sys_updated_on>2020-10-16 14:34:12</sys_updated_on>
         <template><![CDATA[<div class="panel panel-default" ng-show="c.data.noteID">
   <div class="panel-heading clearfix">
     <div class="row">
